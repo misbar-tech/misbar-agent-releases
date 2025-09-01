@@ -213,7 +213,7 @@ prompt() {
   else
     command printf "$(fg_green '[y]')/n: "
   fi
-}
+}w
 
 update_step_progress() {
   local STATUS="$1" # "RUNNING" | "PENDING" | "DELETED"
@@ -232,7 +232,7 @@ latest_version()
 {
   curl -sSL https://api.github.com/repos/misbar-tech/misbar-agent-releases/releases/latest | \
     grep "\"tag_name\"" | \
-    sed -r 's/ *"tag_name": "v([0-9]+\.[0-9]+\.[0-9+])",/\1/'
+    sed -r 's/ *"tag_name": "v([0-9]+\.[0-9]+\.[0-9]+)",/\1/'
 }
 
 set_download_urls()
