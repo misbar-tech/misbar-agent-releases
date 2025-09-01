@@ -213,7 +213,7 @@ prompt() {
   else
     command printf "$(fg_green '[y]')/n: "
   fi
-}w
+}
 
 update_step_progress() {
   local STATUS="$1" # "RUNNING" | "PENDING" | "DELETED"
