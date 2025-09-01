@@ -219,7 +219,7 @@ update_step_progress() {
   local STATUS="$1" # "RUNNING" | "PENDING" | "DELETED"
   local data="{\"status\":\"${STATUS}\", \"agent_uuid\":\"${onboarding_id}\", \"agent_token\":\"${token}\"}"
   curl --request PUT \
-    --url "$server_url"/api/onboarding" \
+    --url "$server_url/api/onboarding" \
     --header "Content-Type: application/json" \
     --data "$data" \
     --output /dev/null \
