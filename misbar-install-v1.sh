@@ -470,4 +470,13 @@ main()
   display_results
 }
 
+error_exit() {
+  error "Error on line $1: $2"
+  exit 1
+}
+
+failed() {
+  error "Failed!"
+}
+
 main
