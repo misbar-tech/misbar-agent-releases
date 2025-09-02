@@ -31,6 +31,7 @@ help() {
   echo "Arguments:"
   echo "  --id=<value>   Onboarding ID"
   echo "  --token=<value>   Authentication token"
+  echo "  --server-url=<value>   Misbar server address"
   exit 1
 }
 
