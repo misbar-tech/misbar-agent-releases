@@ -238,26 +238,19 @@ latest_version()
 
 set_download_urls()
 {
-  if [ -z "$server_url" ] ; then
-    if [ -z "$version" ] ; then
-      version=$(latest_version)
-    fi
-
-    if [ -z "$version" ] ; then
-      error_exit "$LINENO" "Could not determine version to install"
-    fi
-
-    if [ -z "$base_url" ] ; then
-      base_url=$DOWNLOAD_BASE
-    fi
-
-    agent_download_url="$base_url/v$version/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
-    out_file_path="/tmp/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
-  else
-    agent_download_url="$server_url"
-    out_file_path="/tmp/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
+  if [ -z "$version" ] ; then
+    version=$(latest_version)
   fi
 
+  if [ -z "$version" ] ; then
+    error_exit "$LINENO" "Could not determine version to install"
+  fi
+
+  if [ -z "$base_url" ] ; then
+    base_url=$DOWNLOAD_BASE
+  fi
+  agent_download_url="$base_url/v$version/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
+  out_file_path="/tmp/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
   update_step_progress "URLSET"
 }
 
