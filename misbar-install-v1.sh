@@ -26,7 +26,7 @@ onboarding_id=""
 token=""
 
 help() {
-  echo "Usage: sudo ./misbar-install-v3.sh <arguments>"
+  echo "Usage: sudo ./misbar-install-v1.sh <arguments>"
   echo ""
   echo "Arguments:"
   echo "  --id=<value>   Onboarding ID"
@@ -67,7 +67,7 @@ for i in "$@"; do
 done
 
 
-ensure_argument "$server_url" "--url"
+ensure_argument "$server_url" "--server-url"
 ensure_argument "$onboarding_id" "--id"
 ensure_argument "$token" "--token"
 
@@ -237,7 +237,7 @@ latest_version()
 
 set_download_urls()
 {
-  if [ -z "$url" ] ; then
+  if [ -z "$server_url" ] ; then
     if [ -z "$version" ] ; then
       version=$(latest_version)
     fi
@@ -461,15 +461,6 @@ check_prereqs()
   decrease_indent
 }
 
-main()
-{
-  misbar_banner
-  check_prereqs
-  set_download_urls
-  install_package
-  display_results
-}
-
 error_exit() {
   error "Error on line $1: $2"
   exit 1
@@ -477,6 +468,15 @@ error_exit() {
 
 failed() {
   error "Failed!"
+}
+
+main()
+{
+  misbar_banner
+  check_prereqs
+  set_download_urls
+  install_package
+  display_results
 }
 
 main
