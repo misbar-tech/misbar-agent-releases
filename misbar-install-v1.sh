@@ -253,7 +253,7 @@ set_download_urls()
     agent_download_url="$base_url/v$version/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
     out_file_path="/tmp/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
   else
-    agent_download_url="$url"
+    agent_download_url="$server_url"
     out_file_path="/tmp/${PACKAGE_NAME}_v${version}_linux_${arch}.${package_type}"
   fi
 
