@@ -266,6 +266,15 @@ install_package()
   succeeded
   update_step_progress "DOWNLOADED"
 
+  # Create the configuration BEFORE installing the package
+  # This ensures the postinst script can find the proper config
+  if [ -n "$onboarding_id" ]; then
+    info "Creating misbar yaml..."
+    update_step_progress "CREATCONFIG"
+    create_misbar_yml "$MISBAR_YML_PATH"
+    succeeded
+  fi
+
   info "Installing package..."
   # if target install directory doesn't exist and we're using dpkg ensure a clean state 
   # by checking for the package and running purge if it exists.
@@ -277,26 +286,33 @@ install_package()
   unpack_package || error_exit "$LINENO" "Failed to extract package"
   succeeded
 
-  # If an endpoint was specified, we need to write the misbar.yaml
-  if [ -n "$onboarding_id" ]; then
-    info "Creating misbar yaml..."
-    update_step_progress "CREATCONFIG"
-    create_misbar_yml "$MISBAR_YML_PATH"
-    succeeded
-  fi
-
   if [ "$SVC_PRE" = "systemctl" ]; then
+    # Validate service file can be loaded
+    info "Validating service configuration..."
+    if ! systemctl cat misbar.service > /dev/null 2>&1; then
+      error_exit "$LINENO" "Service file cannot be loaded by systemd"
+    fi
+    succeeded
+
     if [ "$(systemctl is-enabled misbar)" = "enabled" ]; then
       # The unit is already enabled; It may be running, too, if this was an upgrade.
       # We'll want to restart, which will start it if it wasn't running already,
       # and restart in the case that this was an upgrade on a running agent.
-      info "Restarting service..."
-      systemctl restart misbar > /dev/null 2>&1 || error_exit "$LINENO" "Failed to restart service"
-      succeeded
+      info "Starting service..."
+      if ! systemctl start misbar > /dev/null 2>&1; then
+        warn "Service failed to start. Check logs with: journalctl -u misbar.service"
+        warn "You may need to configure the service manually"
+      else
+        succeeded
+      fi
     else
-      info "Enabling service..."
-      systemctl enable --now misbar > /dev/null 2>&1 || error_exit "$LINENO" "Failed to enable service"
-      succeeded
+      info "Enabling and starting service..."
+      if ! systemctl enable --now misbar > /dev/null 2>&1; then
+        warn "Service failed to start. Check logs with: journalctl -u misbar.service"
+        warn "You may need to configure the service manually"
+      else
+        succeeded
+      fi
     fi
   else
     case "$(service misbar status)" in
